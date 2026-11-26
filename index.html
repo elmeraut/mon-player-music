@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Player Audio</title>
+    <!-- 1. On inclut le script officiel de Telegram -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body { font-family: sans-serif; background-color: var(--tg-theme-bg-color, #ffffff); color: var(--tg-theme-text-color, #000000); padding: 20px; }
+        h1 { font-size: 1.5rem; }
+        #playlist { margin-top: 20px; }
+        .track { padding: 10px; border-bottom: 1px solid #ccc; cursor: pointer; }
+        .track:hover { background-color: var(--tg-theme-secondary-bg-color, #f0f0f0); }
+    </style>
+</head>
+<body>
+    <h1>🎵 Mon Player Audio</h1>
+    <div id="playlist">
+        <!-- La liste des morceaux sera injectée ici par le JavaScript -->
+    </div>
+
+    <!-- 2. La balise audio (cachée, on utilise nos propres boutons) -->
+    <audio id="audioPlayer" preload="metadata"></audio>
+
+    <script>
+        // 3. On initialise le SDK Telegram
+        if (window.Telegram && window.Telegram.WebApp) {
+            window.Telegram.WebApp.ready();
+            console.log("Telegram WebApp initialisé");
+        }
+
+        // 4. Notre "base de données" de morceaux (exemple)
+        const tracks = [
+            { title: "Titre 1", artist: "Artiste 1", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" },
+            { title: "Titre 2", artist: "Artiste 2", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" }
+        ];
+
+        const audio = document.getElementById('audioPlayer');
+        const playlistDiv = document.getElementById('playlist');
+
+        // 5. On génère la liste des morceaux
+        tracks.forEach((track, index) => {
+            const trackDiv = document.createElement('div');
+            trackDiv.className = 'track';
+            trackDiv.innerHTML = `<strong>${track.title}</strong> - ${track.artist}`;
+            trackDiv.onclick = () => playTrack(index);
+            playlistDiv.appendChild(trackDiv);
+        });
+
+        // 6. Fonction pour lire un morceau
+        function playTrack(index) {
+            audio.src = tracks[index].src;
+            audio.play();
+            console.log(`Lecture de : ${tracks[index].title}`);
+        }
+    </script>
+</body>
+</html>

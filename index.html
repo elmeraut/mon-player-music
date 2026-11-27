@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>
@@ -155,5 +156,146 @@
 <p class="p1"><span class="Apple-converted-space">    </span>&lt;/script&gt;</p>
 <p class="p1">&lt;/body&gt;</p>
 <p class="p1">&lt;/html&gt;</p>
+=======
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Player Audio</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body { font-family: sans-serif; background-color: var(--tg-theme-bg-color, #ffffff); color: var(--tg-theme-text-color, #000000); padding: 20px; margin: 0; padding-bottom: 80px; }
+        h1 { font-size: 1.5rem; margin-bottom: 20px; }
+        
+        /* Style des boutons de playlist */
+        .playlist-card { 
+            background-color: var(--tg-theme-secondary-bg-color, #f0f0f0); 
+            padding: 15px; 
+            margin-bottom: 10px; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-weight: bold;
+        }
+        .playlist-card:hover { opacity: 0.8; }
+
+        /* Style des musiques */
+        .track { padding: 12px 10px; border-bottom: 1px solid #ccc; cursor: pointer; }
+        .track:hover { background-color: var(--tg-theme-secondary-bg-color, #f0f0f0); }
+        
+        /* Bouton retour */
+        #back-btn { 
+            background: none; border: none; color: var(--tg-theme-link-color, #007aff); 
+            font-size: 1rem; cursor: pointer; padding: 0 0 15px 0; font-weight: bold;
+        }
+        
+        /* Cacher les conteneurs par défaut */
+        #tracks-screen { display: none; }
+        
+        /* Lecteur audio fixé en bas */
+        audio { 
+            position: fixed; 
+            bottom: 0; 
+            left: 0; 
+            width: 100%; 
+            background-color: var(--tg-theme-bg-color, #ffffff);
+            padding: 10px;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ÉCRAN 1 : La liste des playlists -->
+    <div id="playlists-screen">
+        <h1>📁 Mes Playlists</h1>
+        <div id="playlists-list">
+            <p>Chargement des musiques...</p>
+        </div>
+    </div>
+
+    <!-- ÉCRAN 2 : Les musiques d'une playlist -->
+    <div id="tracks-screen">
+        <button id="back-btn" onclick="showPlaylists()">⬅ Retour aux playlists</button>
+        <h1 id="current-playlist-title"></h1>
+        <div id="tracks-list"></div>
+    </div>
+
+    <!-- Le lecteur audio (il reste toujours en bas) -->
+    <audio id="audioPlayer" controls></audio>
+
+    <script>
+        // Initialisation Telegram
+        if (window.Telegram && window.Telegram.WebApp) {
+            window.Telegram.WebApp.ready();
+        }
+
+        // Variables globales
+        let mesPlaylists = {}; 
+        const audio = document.getElementById('audioPlayer');
+        const playlistsScreen = document.getElementById('playlists-screen');
+        const tracksScreen = document.getElementById('tracks-screen');
+        const playlistsList = document.getElementById('playlists-list');
+        const tracksList = document.getElementById('tracks-list');
+        const currentPlaylistTitle = document.getElementById('current-playlist-title');
+
+        // 1. Chargement du fichier JSON généré par Python
+        fetch('playlist.json')
+            .then(response => {
+                if (!response.ok) throw new Error("Fichier introuvable");
+                return response.json();
+            })
+            .then(data => {
+                mesPlaylists = data;
+                showPlaylists(); // On affiche le menu une fois les données chargées
+            })
+            .catch(error => {
+                console.error("Erreur:", error);
+                playlistsList.innerHTML = "<p>Erreur : impossible de charger le fichier playlist.json. Vérifie qu'il est bien sur GitHub.</p>";
+            });
+
+        // 2. Fonction pour afficher la liste des playlists
+        function showPlaylists() {
+            playlistsScreen.style.display = 'block';
+            tracksScreen.style.display = 'none';
+            
+            playlistsList.innerHTML = ''; 
+            
+            for (const nomPlaylist in mesPlaylists) {
+                const card = document.createElement('div');
+                card.className = 'playlist-card';
+                card.innerText = nomPlaylist;
+                card.onclick = () => openPlaylist(nomPlaylist);
+                playlistsList.appendChild(card);
+            }
+        }
+
+        // 3. Fonction pour ouvrir une playlist spécifique
+        function openPlaylist(nomPlaylist) {
+            playlistsScreen.style.display = 'none';
+            tracksScreen.style.display = 'block';
+            currentPlaylistTitle.innerText = nomPlaylist;
+            
+            tracksList.innerHTML = ''; 
+            
+            const musiques = mesPlaylists[nomPlaylist];
+            
+            musiques.forEach((musique) => {
+                const div = document.createElement('div');
+                div.className = 'track';
+                div.innerHTML = `<strong>${musique.title}</strong> - ${musique.artist}`;
+                div.onclick = () => playTrack(musique.src);
+                tracksList.appendChild(div);
+            });
+        }
+
+        // 4. Fonction pour jouer une musique
+        function playTrack(lienAudio) {
+            // On encode l'URL pour gérer les espaces et caractères spéciaux dans les noms de fichiers
+            audio.src = encodeURI(lienAudio);
+            audio.play().catch(e => console.log("Lecture bloquée par le navigateur", e));
+        }
+    </script>
+>>>>>>> d612ff81f2db06b88f1d837bc95e014112ccc0a7
 </body>
 </html>

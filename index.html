@@ -1,0 +1,159 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="1894.7">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+    span.s1 {font: 12.0px 'Apple Color Emoji'}
+    span.s2 {font: 12.0px 'Hiragino Sans'}
+  </style>
+</head>
+<body>
+<p class="p1">&lt;!DOCTYPE html&gt;</p>
+<p class="p1">&lt;html lang="fr"&gt;</p>
+<p class="p1">&lt;head&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta charset="UTF-8"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;title&gt;Mon Player Audio&lt;/title&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;script src="https://telegram.org/js/telegram-web-app.js"&gt;&lt;/script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;style&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>body { font-family: sans-serif; background-color: var(--tg-theme-bg-color, #ffffff); color: var(--tg-theme-text-color, #000000); padding: 20px; margin: 0; padding-bottom: 80px; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>h1 { font-size: 1.5rem; margin-bottom: 20px; }</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>/* Style des boutons de playlist */</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.playlist-card {<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>background-color: var(--tg-theme-secondary-bg-color, #f0f0f0);<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>padding: 15px;<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin-bottom: 10px;<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 8px;<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>cursor: pointer;<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-weight: bold;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.playlist-card:hover { opacity: 0.8; }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>/* Style des musiques */</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.track { padding: 12px 10px; border-bottom: 1px solid #ccc; cursor: pointer; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.track:hover { background-color: var(--tg-theme-secondary-bg-color, #f0f0f0); }</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>/* Bouton retour */</p>
+<p class="p1"><span class="Apple-converted-space">        </span>#back-btn {<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: none; border: none; color: var(--tg-theme-link-color, #007aff);<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-size: 1rem; cursor: pointer; padding: 0 0 15px 0; font-weight: bold;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>/* Cacher les conteneurs par défaut */</p>
+<p class="p1"><span class="Apple-converted-space">        </span>#tracks-screen { display: none; }</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>/* Lecteur audio fixé en bas */</p>
+<p class="p1"><span class="Apple-converted-space">        </span>audio {<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>position: fixed;<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>bottom: 0;<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>left: 0;<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>width: 100%;<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>background-color: var(--tg-theme-bg-color, #ffffff);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>padding: 10px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>box-sizing: border-box;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/style&gt;</p>
+<p class="p1">&lt;/head&gt;</p>
+<p class="p1">&lt;body&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;!-- ÉCRAN 1 : La liste des playlists --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div id="playlists-screen"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;h1&gt;<span class="s1">📁</span> Mes Playlists&lt;/h1&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div id="playlists-list"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;p&gt;Chargement des musiques...&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;!-- ÉCRAN 2 : Les musiques d'une playlist --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div id="tracks-screen"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;button id="back-btn" onclick="showPlaylists()"&gt;<span class="s2">⬅</span> Retour aux playlists&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;h1 id="current-playlist-title"&gt;&lt;/h1&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div id="tracks-list"&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;!-- Le lecteur audio (il reste toujours en bas) --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;audio id="audioPlayer" controls&gt;&lt;/audio&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>// Initialisation Telegram</p>
+<p class="p1"><span class="Apple-converted-space">        </span>if (window.Telegram &amp;&amp; window.Telegram.WebApp) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>window.Telegram.WebApp.ready();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>// Variables globales</p>
+<p class="p1"><span class="Apple-converted-space">        </span>let mesPlaylists = {};<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>const audio = document.getElementById('audioPlayer');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const playlistsScreen = document.getElementById('playlists-screen');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const tracksScreen = document.getElementById('tracks-screen');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const playlistsList = document.getElementById('playlists-list');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const tracksList = document.getElementById('tracks-list');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const currentPlaylistTitle = document.getElementById('current-playlist-title');</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>// 1. Chargement du fichier JSON généré par Python</p>
+<p class="p1"><span class="Apple-converted-space">        </span>fetch('playlist.json')</p>
+<p class="p1"><span class="Apple-converted-space">            </span>.then(response =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>if (!response.ok) throw new Error("Fichier introuvable");</p>
+<p class="p1"><span class="Apple-converted-space">                </span>return response.json();</p>
+<p class="p1"><span class="Apple-converted-space">            </span>})</p>
+<p class="p1"><span class="Apple-converted-space">            </span>.then(data =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>mesPlaylists = data;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>showPlaylists(); // On affiche le menu une fois les données chargées</p>
+<p class="p1"><span class="Apple-converted-space">            </span>})</p>
+<p class="p1"><span class="Apple-converted-space">            </span>.catch(error =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>console.error("Erreur:", error);</p>
+<p class="p1"><span class="Apple-converted-space">                </span>playlistsList.innerHTML = "&lt;p&gt;Erreur : impossible de charger le fichier playlist.json. Vérifie qu'il est bien sur GitHub.&lt;/p&gt;";</p>
+<p class="p1"><span class="Apple-converted-space">            </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>// 2. Fonction pour afficher la liste des playlists</p>
+<p class="p1"><span class="Apple-converted-space">        </span>function showPlaylists() {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>playlistsScreen.style.display = 'block';</p>
+<p class="p1"><span class="Apple-converted-space">            </span>tracksScreen.style.display = 'none';</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>playlistsList.innerHTML = '';<span class="Apple-converted-space"> </span></p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>for (const nomPlaylist in mesPlaylists) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const card = document.createElement('div');</p>
+<p class="p1"><span class="Apple-converted-space">                </span>card.className = 'playlist-card';</p>
+<p class="p1"><span class="Apple-converted-space">                </span>card.innerText = nomPlaylist;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>card.onclick = () =&gt; openPlaylist(nomPlaylist);</p>
+<p class="p1"><span class="Apple-converted-space">                </span>playlistsList.appendChild(card);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>// 3. Fonction pour ouvrir une playlist spécifique</p>
+<p class="p1"><span class="Apple-converted-space">        </span>function openPlaylist(nomPlaylist) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>playlistsScreen.style.display = 'none';</p>
+<p class="p1"><span class="Apple-converted-space">            </span>tracksScreen.style.display = 'block';</p>
+<p class="p1"><span class="Apple-converted-space">            </span>currentPlaylistTitle.innerText = nomPlaylist;</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>tracksList.innerHTML = '';<span class="Apple-converted-space"> </span></p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>const musiques = mesPlaylists[nomPlaylist];</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>musiques.forEach((musique) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const div = document.createElement('div');</p>
+<p class="p1"><span class="Apple-converted-space">                </span>div.className = 'track';</p>
+<p class="p1"><span class="Apple-converted-space">                </span>div.innerHTML = `&lt;strong&gt;${musique.title}&lt;/strong&gt; - ${musique.artist}`;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>div.onclick = () =&gt; playTrack(musique.src);</p>
+<p class="p1"><span class="Apple-converted-space">                </span>tracksList.appendChild(div);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>});</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>// 4. Fonction pour jouer une musique</p>
+<p class="p1"><span class="Apple-converted-space">        </span>function playTrack(lienAudio) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>// On encode l'URL pour gérer les espaces et caractères spéciaux dans les noms de fichiers</p>
+<p class="p1"><span class="Apple-converted-space">            </span>audio.src = encodeURI(lienAudio);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>audio.play().catch(e =&gt; console.log("Lecture bloquée par le navigateur", e));</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/script&gt;</p>
+<p class="p1">&lt;/body&gt;</p>
+<p class="p1">&lt;/html&gt;</p>
+</body>
+</html>

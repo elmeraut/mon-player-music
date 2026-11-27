@@ -4,56 +4,128 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mon Player Audio</title>
-    <!-- 1. On inclut le script officiel de Telegram -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        body { font-family: sans-serif; background-color: var(--tg-theme-bg-color, #ffffff); color: var(--tg-theme-text-color, #000000); padding: 20px; }
-        h1 { font-size: 1.5rem; }
-        #playlist { margin-top: 20px; }
-        .track { padding: 10px; border-bottom: 1px solid #ccc; cursor: pointer; }
+        body { font-family: sans-serif; background-color: var(--tg-theme-bg-color, #ffffff); color: var(--tg-theme-text-color, #000000); padding: 20px; margin: 0; }
+        h1 { font-size: 1.5rem; margin-bottom: 20px; }
+        
+        /* Style des boutons de playlist */
+        .playlist-card { 
+            background-color: var(--tg-theme-secondary-bg-color, #f0f0f0); 
+            padding: 15px; 
+            margin-bottom: 10px; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-weight: bold;
+        }
+        .playlist-card:hover { opacity: 0.8; }
+
+        /* Style des musiques */
+        .track { padding: 12px 10px; border-bottom: 1px solid #ccc; cursor: pointer; }
         .track:hover { background-color: var(--tg-theme-secondary-bg-color, #f0f0f0); }
+        
+        /* Bouton retour */
+        #back-btn { 
+            background: none; border: none; color: var(--tg-theme-link-color, #007aff); 
+            font-size: 1rem; cursor: pointer; padding: 0 0 15px 0; font-weight: bold;
+        }
+        
+        /* Cacher les conteneurs par défaut */
+        #tracks-screen { display: none; }
+        
+        /* Lecteur audio en bas */
+        audio { width: 100%; margin-top: 20px; }
     </style>
 </head>
 <body>
-    <h1>🎵 Mon Player Audio</h1>
-    <div id="playlist">
-        <!-- La liste des morceaux sera injectée ici par le JavaScript -->
+
+    <!-- ÉCRAN 1 : La liste des playlists -->
+    <div id="playlists-screen">
+        <h1>📁 Mes Playlists</h1>
+        <div id="playlists-list"></div>
     </div>
 
-    <!-- 2. La balise audio (cachée, on utilise nos propres boutons) -->
-    <audio id="audioPlayer" preload="metadata"></audio>
+    <!-- ÉCRAN 2 : Les musiques d'une playlist -->
+    <div id="tracks-screen">
+        <button id="back-btn" onclick="showPlaylists()">⬅ Retour aux playlists</button>
+        <h1 id="current-playlist-title"></h1>
+        <div id="tracks-list"></div>
+    </div>
+
+    <!-- Le lecteur audio (il reste toujours en bas) -->
+    <audio id="audioPlayer" controls></audio>
 
     <script>
-        // 3. On initialise le SDK Telegram
+        // Initialisation Telegram
         if (window.Telegram && window.Telegram.WebApp) {
             window.Telegram.WebApp.ready();
-            console.log("Telegram WebApp initialisé");
         }
 
-        // 4. Notre "base de données" de morceaux (exemple)
-        const tracks = [
-            { title: "Titre 1", artist: "Artiste 1", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" },
-            { title: "Titre 2", artist: "Artiste 2", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" }
-        ];
+        // --- TES DONNÉES ---
+        // C'est ici que tu organises tes musiques par playlist !
+        const mesPlaylists = {
+            "🔥 Mes Hits": [
+                { title: "Titre 1", artist: "Artiste 1", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" },
+                { title: "Titre 2", artist: "Artiste 2", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" }
+            ],
+            "😌 Chill & Détente": [
+                { title: "Titre 3", artist: "Artiste 3", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" }
+            ],
+            "🎧 Podcasts": [
+                { title: "Épisode 1", artist: "Mon Podcast", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3" }
+            ]
+        };
 
         const audio = document.getElementById('audioPlayer');
-        const playlistDiv = document.getElementById('playlist');
+        const playlistsScreen = document.getElementById('playlists-screen');
+        const tracksScreen = document.getElementById('tracks-screen');
+        const playlistsList = document.getElementById('playlists-list');
+        const tracksList = document.getElementById('tracks-list');
+        const currentPlaylistTitle = document.getElementById('current-playlist-title');
 
-        // 5. On génère la liste des morceaux
-        tracks.forEach((track, index) => {
-            const trackDiv = document.createElement('div');
-            trackDiv.className = 'track';
-            trackDiv.innerHTML = `<strong>${track.title}</strong> - ${track.artist}`;
-            trackDiv.onclick = () => playTrack(index);
-            playlistDiv.appendChild(trackDiv);
-        });
-
-        // 6. Fonction pour lire un morceau
-        function playTrack(index) {
-            audio.src = tracks[index].src;
-            audio.play();
-            console.log(`Lecture de : ${tracks[index].title}`);
+        // 1. Fonction pour afficher la liste des playlists
+        function showPlaylists() {
+            playlistsScreen.style.display = 'block';
+            tracksScreen.style.display = 'none';
+            
+            playlistsList.innerHTML = ''; // On vide la liste
+            
+            for (const nomPlaylist in mesPlaylists) {
+                const card = document.createElement('div');
+                card.className = 'playlist-card';
+                card.innerText = nomPlaylist;
+                card.onclick = () => openPlaylist(nomPlaylist);
+                playlistsList.appendChild(card);
+            }
         }
+
+        // 2. Fonction pour ouvrir une playlist spécifique
+        function openPlaylist(nomPlaylist) {
+            playlistsScreen.style.display = 'none';
+            tracksScreen.style.display = 'block';
+            currentPlaylistTitle.innerText = nomPlaylist;
+            
+            tracksList.innerHTML = ''; // On vide la liste des musiques
+            
+            const musiques = mesPlaylists[nomPlaylist];
+            
+            musiques.forEach((musique, index) => {
+                const div = document.createElement('div');
+                div.className = 'track';
+                div.innerHTML = `<strong>${musique.title}</strong> - ${musique.artist}`;
+                div.onclick = () => playTrack(musique.src);
+                tracksList.appendChild(div);
+            });
+        }
+
+        // 3. Fonction pour jouer une musique
+        function playTrack(lienAudio) {
+            audio.src = lienAudio;
+            audio.play();
+        }
+
+        // Lancer l'application en affichant les playlists au démarrage
+        showPlaylists();
     </script>
 </body>
 </html>
